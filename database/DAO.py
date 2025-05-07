@@ -50,8 +50,7 @@ class DAO():
         query = """select *
                     from countries.contiguity c
                     where c.`year` <= %s
-                    and conttype = 1
-                    and c.state1no < c.state2no """
+                    and conttype = 1"""
         cursor.execute(query, (anno,))
 
         for row in cursor:
@@ -67,16 +66,17 @@ class DAO():
         cursor = conn.cursor()
 
         result = []
-        query = """SELECT state1no, state1ab, COUNT(state1no) AS peso
-                       from countries.contiguity c
+        query = """SELECT c.state1no, c.state1ab, ca.StateNme,COUNT(state1no) AS peso
+                       from countries.contiguity c, countries.country ca
                        where c.`year` <= %s
                        and conttype = 1
-                       and c.state1no < c.state2no
-                    group by c.state1no"""
+                       and c.state1no = ca.CCode
+                    group by c.state1no
+                    order by ca.StateNme"""
         cursor.execute(query, (anno,))
 
         for row in cursor:
-            result.append((row[1], row[2]))
+            result.append((row[2], row[3], row[0]))
 
         cursor.close()
         conn.close()

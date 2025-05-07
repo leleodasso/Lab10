@@ -12,6 +12,9 @@ class Model:
         for a in self._county:
             self._idMapCounty[a.CCode] = a
 
+    def getAllCountry(self):
+        return DAO.getAllNodes()
+
     def buildGraph(self, anno):
         # Aggiungo i nodi
         anno = int(anno)
@@ -30,6 +33,7 @@ class Model:
             self._grafo.add_edge(self._idMapCounty[e.state1no], self._idMapCounty[e.state2no])
 
 
+
     def getWeightNodes(self,anno):
         anno = int(anno)
         nodiPesati = DAO.getWeightNodes(anno)
@@ -42,8 +46,12 @@ class Model:
     def getNumArchi(self):
         return len(self._grafo.edges)
 
-
     def getNumConnessa(self):
         return nx.number_connected_components(self._grafo)
+
+    def getComponenteConnessa(self, stato):
+        print(f"hai selezionato: {self._idMapCounty[int(stato)]}")
+        conn = nx.node_connected_component(self._grafo, self._idMapCounty[int(stato)])
+        return conn
 
 
